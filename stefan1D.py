@@ -8,13 +8,14 @@ class Stefan1D :
     Analytical Solution to 1D Stefan problem
     x* (x = 0, t = 0) = 0 -> initial position of the interface
     """
-    def __init__(self, value = None):
-       self.ste_ = value
+    def __init__(self, ste = None):
+       self.ste_ = ste
 
     @classmethod
     def fromDict(cls, **kwargs):
         """
-        Calculate stefan number from given parameters
+        Calculate stefan number from given parameters as dictionary
+        { "Tmax" : ,"Tmin" : ,"Tsol" : ,"Tliq" : , "Cps":, "Cpl":, "Lheat":}
         """
         Tmax = kwargs["Tmax"]
         Tmin = kwargs["Tmin"]
@@ -24,8 +25,7 @@ class Stefan1D :
         Cpl = kwargs["Cpl"]
         Lheat = kwargs["Lheat"]
         ste = (Cps*(Tsol - Tmin) + Cpl*(Tmax - Tliq)) / Lheat # stefan number
-        self.ste_ = ste
-        return cls(value = ste)
+        return cls(ste = ste)
 
     def lmdCalc_(self):
         """
