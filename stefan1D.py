@@ -23,9 +23,9 @@ class Stefan1D :
         Cps = kwargs["Cps"]
         Cpl = kwargs["Cpl"]
         Lheat = kwargs["Lheat"]
-        ste = (Cps*(Tsol - Tmin) + Cpl*(Tmax - Tliq)) / lheat
+        ste = (Cps*(Tsol - Tmin) + Cpl*(Tmax - Tliq)) / Lheat # stefan number
         self.ste_ = ste
-        return Stefan1D(value = ste)
+        return cls(value = ste)
 
     def lmdCalc_(self):
         """
