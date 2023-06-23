@@ -8,50 +8,77 @@ class Stefan1D :
     Analytical Solution to 1D Stefan problem
     x* (x = 0, t = 0) = 0 -> initial position of the interface
     """
-    def __init__(self, ste = None):
-       self.ste_ = ste
+    def __init__(self, Params):
 
-    @classmethod
-    def fromDict(cls, **kwargs):
         """
         Calculate stefan number from given parameters as dictionary
-        { "Tmax" : ,"Tmin" : ,"Tsol" : ,"Tliq" : , "Cps":, "Cpl":, "Lheat":}
-        """
-        Tmax = kwargs["Tmax"]
-        Tmin = kwargs["Tmin"]
-        Tsol = kwargs["Tsol"]
-        Tliq = kwargs["Tliq"]
-        Cps = kwargs["Cps"]
-        Cpl = kwargs["Cpl"]
-        Lheat = kwargs["Lheat"]
-        ste = (Cps*(Tsol - Tmin) + Cpl*(Tmax - Tliq)) / Lheat # stefan number
-        return cls(ste = ste)
+        {"TS0" : ,"TL0" : ,"Tmelt" :,"Lheat": ,"lmdaS" : ,"lmdaL" : ,"rhoS":, "rhoL: , "cpS":, "cpL":}
 
-    def lmdCalc_(self):
         """
-        Solve for lambda value
-        """
-        lfunc = lambda lmbda : self.ste_*lmbda - 1/np.sqrt(np.pi) * (np.exp(-lmbda**2))/sp.special.erf(lmbda)
-        self.lmbda_ = fsolve(lfunc, 1)
+        # Parse Parameters
+        self.TS0 = Params["TS0"]
+        self.TL0 = Params["TL0"]
+        self.Tmelt = Params["Tmelt"]
+        self.Lheat = Params["Lheat"]
+        self.lamdaS = Params["lamdaS"]
+        self.lamdaL = Params["lamdaL"]
+        self.rhoS =  Params["rhoS"]
+        self.rhoL =  Params["rhoL"]
+        self.cpS = Params["cpS"]
+        self.cpL = Params["cpL"]
+
+        # Calculate Constants
+        self.alphaS = self.lamdaS/(self.cpS*self.rhoS)
+        self.alphaL = self.lamdaL/(self.cpL*self.rhoL)
+        self.Ste =  self.cpS*(self.Tmelt - self.TS0)/self.Lheat
+        print(self.Ste)
+
+        phiFunc = lambda phi : (self.Ste/np.sqrt(np.pi)) - sp.special.erf(phi)*(phi*np.exp(phi**2) -  
+        (self.cpS*(self.TL0 - self.Tmelt)*np.exp((phi**2)*(1 - self.alphaS/self.alphaL))*np.sqrt(self.lamdaL*self.rhoL*self.cpL))/
+        (self.Lheat*np.sqrt(np.pi)*sp.special.erfc(phi*np.sqrt(self.alphaS/self.alphaL))*np.sqrt(self.lamdaS*self.rhoS*self.cpS)))
+
+        self.phi = fsolve(phiFunc, 1)
+
 
     def xStar(self, t):
         """
         Calculate interface position for given time
         """
-        if self.ste_:
-            self.lmdCalc_()
-            return 2*self.lmbda_*np.sqrt(t)
-        else:
-            print("Define stefan number")
+        return 2*self.phi*np.sqrt(self.alphaS*t)
 
     def T(self, x, t):
         """
         Calculate temperature for given position and  time
         """
-        if self.ste_:
-            self.lmdCalc_()
-            return 1 - sp.special.erf(x/(2*np.sqrt(t)))/sp.special.erf(self.lmbda_)
-        else:
-            print("Define stefan number")
+        T = np.zeros(x.shape[0],t.shape[0])
+        xstar = self.xStar(t)
+        for i,ti in enumerate(t):
+            for j,xi in enumerate(x):
+                if (xi <= xstar[i]):
+                    T[i,j] = self.TS0 + (self.Tmelt -self.TS0)*sp.special.erf(xi/(2*np.sqrt(self.alphaS*ti)))/sp.special.erf(phi)
+                else:
+                    T[i,j] = self.TL0 + (self.Tmelt -self.TL0)*sp.special.erfc(xi/(2*np.sqrt(self.alphaL*ti)))/sp.special.erfc(phi*np.sqrt(self.alphaS/self.alphaL))
+        return T
 
 
+
+             
+
+
+#---------------------------------------------USAGE------------------------------------#
+if __name__ == "__main__": 
+    # or by giving parameters
+    Params = { "TS0" : 3000 ,
+              "TL0" : 300  ,
+              "Tmelt" : 1475 ,
+              "Lheat":4e5,
+              "lamdaS" : 1525 , 
+              "lamdaL" : 1525 , 
+              "rhoS": 100,
+              "rhoL": 1000,
+              "cpS": 750, 
+              "cpL": 1000}
+    stf1 = Stefan1D(Params)
+    # interface position after 100s
+    print(stf1.xStar(100))
+    
