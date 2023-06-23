@@ -68,16 +68,16 @@ class Stefan1D :
 #---------------------------------------------USAGE------------------------------------#
 if __name__ == "__main__": 
     # or by giving parameters
-    Params = { "TS0" : 3000 ,
-              "TL0" : 300  ,
-              "Tmelt" : 1475 ,
-              "Lheat":4e5,
-              "lamdaS" : 1525 , 
-              "lamdaL" : 1525 , 
-              "rhoS": 100,
-              "rhoL": 1000,
-              "cpS": 750, 
-              "cpL": 1000}
+    Params = { "TS0" : 272.5 ,
+              "TL0" :  300 ,
+              "Tmelt" : 273 ,
+              "Lheat":336e3,
+              "lamdaS" : 2.22 , 
+              "lamdaL" : 0.54 , 
+              "rhoS": 0.0009,
+              "rhoL": 0.001,
+              "cpS": 2090, 
+              "cpL": 4200}
     stf1 = Stefan1D(Params)
     # interface position after 100s
     print(stf1.xStar(100))
