@@ -1,0 +1,3 @@
+# Ignore notebooks for testing
+*.ipynb
+*.ipynb_checkpoints

@@ -1,7 +1,5 @@
 import numpy as np
-import scipy as sp
 from scipy.optimize import fsolve
-import matplotlib.pyplot as plt
 
 class Stefan1D :
     """
@@ -84,8 +82,6 @@ class Stefan1D :
                 else:
                      temp = self.TS0 + (self.Tmelt - self.TS0)*sp.special.erfc(xi/(2*np.sqrt(self.alphaS*ti)))/sp.special.erfc(self.phi*np.sqrt(self.alphaL/self.alphaS))
                      T[j,i] = temp[0]
-
-
         return T
 
 #---------------------------------------------USAGE------------------------------------#
