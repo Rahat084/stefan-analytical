@@ -17,7 +17,8 @@ class Stefan1D :
     def __init__(self, Params):
 
         """
-        Calculate stefan number from given parameters as dictionary
+        define stefan 1D stefan problem with  parameters as value to the following
+        dictionary key
         {
         "TS0" : , -> Initial temperature of solid
         "TL0" : , -> Initial temperature of liquid
@@ -56,15 +57,21 @@ class Stefan1D :
         self.phi = fsolve(phiFunc, 1)
 
 
-    def xStar(self, t):
+    def getSte( self) -> np.float64 :
         """
-        Calculate interface position for given time
+        Get Calculated Stefan Number(Ste)
+        """
+        return self.Ste[0]
+
+    def xStar(self, t : np.ndarray) -> np.ndarray:
+        """
+        Calculate interface position for given discretized time
         """
         return 2*self.phi*np.sqrt(self.alphaL*t)
 
-    def T(self, x, t):
+    def T(self, x : np.ndarray, t : np.ndarray) -> np.ndarray:
         """
-        Calculate temperature for given position and  time
+        Calculate temperature for given discretized domain and  time
         """
         T = np.zeros((x.shape[0],t.shape[0]), dtype = "float64")
         xstar = self.xStar(t)
