@@ -55,10 +55,12 @@ class Stefan1D :
         for i,ti in enumerate(t):
             for j,xi in enumerate(x):
                 if (xi <= xstar[i]):
-                     T[j][i] = self.TS0 + (self.Tmelt -self.TS0)*sp.special.erf(xi/(2*np.sqrt(self.alphaS*ti)))/sp.special.erf(self.phi)
+                     temp  = self.TS0 + (self.Tmelt -self.TS0)*sp.special.erf(xi/(2*np.sqrt(self.alphaS*ti)))/sp.special.erf(self.phi)
+                     T[j,i] = temp[0]
                      
                 else:
-                     T[j][i] = self.TL0 + (self.Tmelt -self.TL0)*sp.special.erfc(xi/(2*np.sqrt(self.alphaL*ti)))/sp.special.erfc(self.phi*np.sqrt(self.alphaS/self.alphaL))
+                     temp = self.TL0 + (self.Tmelt -self.TL0)*sp.special.erfc(xi/(2*np.sqrt(self.alphaL*ti)))/sp.special.erfc(self.phi*np.sqrt(self.alphaS/self.alphaL))
+                     T[j,i] = temp[0]
                      
                     
         return T
