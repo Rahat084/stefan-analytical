@@ -31,7 +31,6 @@ class Stefan1D :
         self.alphaS = self.lamdaS/(self.cpS*self.rhoS)
         self.alphaL = self.lamdaL/(self.cpL*self.rhoL)
         self.Ste =  self.cpS*(self.Tmelt - self.TS0)/self.Lheat
-        print(self.Ste)
 
         phiFunc = lambda phi : (self.Ste/np.sqrt(np.pi)) - sp.special.erf(phi)*(phi*np.exp(phi**2) -  
         (self.cpS*(self.TL0 - self.Tmelt)*np.exp((phi**2)*(1 - self.alphaS/self.alphaL))*np.sqrt(self.lamdaL*self.rhoL*self.cpL))/
@@ -50,14 +49,18 @@ class Stefan1D :
         """
         Calculate temperature for given position and  time
         """
-        T = np.zeros(x.shape[0],t.shape[0])
+        T = np.zeros((x.shape[0],t.shape[0]), dtype = "float64")
+        print(T.shape)
         xstar = self.xStar(t)
         for i,ti in enumerate(t):
             for j,xi in enumerate(x):
                 if (xi <= xstar[i]):
-                    T[i,j] = self.TS0 + (self.Tmelt -self.TS0)*sp.special.erf(xi/(2*np.sqrt(self.alphaS*ti)))/sp.special.erf(phi)
+                     T[j][i] = self.TS0 + (self.Tmelt -self.TS0)*sp.special.erf(xi/(2*np.sqrt(self.alphaS*ti)))/sp.special.erf(self.phi)
+                     
                 else:
-                    T[i,j] = self.TL0 + (self.Tmelt -self.TL0)*sp.special.erfc(xi/(2*np.sqrt(self.alphaL*ti)))/sp.special.erfc(phi*np.sqrt(self.alphaS/self.alphaL))
+                     T[j][i] = self.TL0 + (self.Tmelt -self.TL0)*sp.special.erfc(xi/(2*np.sqrt(self.alphaL*ti)))/sp.special.erfc(self.phi*np.sqrt(self.alphaS/self.alphaL))
+                     
+                    
         return T
 
 
@@ -68,17 +71,20 @@ class Stefan1D :
 #---------------------------------------------USAGE------------------------------------#
 if __name__ == "__main__": 
     # or by giving parameters
-    Params = { "TS0" : 3000 ,
-              "TL0" : 300  ,
-              "Tmelt" : 1475 ,
-              "Lheat":4e5,
-              "lamdaS" : 1525 , 
-              "lamdaL" : 1525 , 
-              "rhoS": 100,
-              "rhoL": 1000,
-              "cpS": 750, 
-              "cpL": 1000}
+    Params = { "TS0" : 272.5 ,
+              "TL0" :  300 ,
+              "Tmelt" : 273 ,
+              "Lheat":336e3,
+              "lamdaS" : 2.22 , 
+              "lamdaL" : 0.54 , 
+              "rhoS": 0.0009,
+              "rhoL": 0.001,
+              "cpS": 2090, 
+              "cpL": 4200}
     stf1 = Stefan1D(Params)
     # interface position after 100s
-    print(stf1.xStar(100))
+    print(stf1.xStar(np.linspace(1,100,10)))
+    x = np.array([0.5])
+    t = np.array([10, 20])
+    print(stf1.T(x, t))
     
