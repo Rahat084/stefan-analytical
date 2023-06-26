@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as sp
 from scipy.optimize import fsolve
 
 class Stefan1D :
@@ -87,7 +88,8 @@ class Stefan1D :
 #---------------------------------------------USAGE------------------------------------#
 if __name__ == "__main__":
     # or by giving parameters
-    Params = { "TS0" : 272.5 ,
+    water_params = { 
+              "TS0" : 272.5 ,
               "TL0" :  300 ,
               "Tmelt" : 273 ,
               "Lheat":336e3,
@@ -96,11 +98,13 @@ if __name__ == "__main__":
               "rhoS": 0.0009,
               "rhoL": 0.001,
               "cpS": 2090,
-              "cpL": 4200}
-    stf1 = Stefan1D(Params)
-    # interface position after 100s
-    print(stf1.xStar(np.linspace(1,100,10)))
+              "cpL": 4200
+                 }
+    ice_melt = Stefan1D(water_params)
+    # Calculate Melt interface position at first 100s
+    print("interface position = ", ice_melt.xStar(np.linspace(0,100,10)))
+    # Calculate Temperature at given location at given time
     x = np.array([0.5])
     t = np.array([10, 20])
-    print(stf1.T(x, t))
+    print("Temperature =\n ", ice_melt.T(x, t))
 
