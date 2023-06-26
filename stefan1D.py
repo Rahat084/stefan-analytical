@@ -19,16 +19,16 @@ class Stefan1D :
         define stefan 1D stefan problem with  parameters as value to the following
         dictionary key
         {
-        "TS0" : , -> Initial temperature of solid
-        "TL0" : , -> Initial temperature of liquid
-        "Tmelt" :, -> Melting temperature
-        "Lheat" : , -> Latent heat of phase change
-        "lmdaS" : , -> Thermal conductivity of Solid
+        "TS0" : , -> Initial temperature of solid (K)
+        "TL0" : , -> Initial temperature of liquid (K)
+        "Tmelt" :, -> Melting temperature (K)
+        "Lheat" : , -> Latent heat of phase change (J)
+        "lmdaS" : , -> Thermal conductivity of Solid (JS-1m-1K-1 or, Wm-1K-1)
         "lmdaL" : , -> Thermal conductivity of Liquid
-        "rhoS" : , -> Denisty of Solid
-        "rhoL : , -> Denisty of Liquid
-        "cpS" : , -> Heat capacity of Solid
-        "cpL": , -> Heat capacity of Liquid
+        "rhoS" : , -> Denisty of Solid (Kgm-3)
+        "rhoL : , -> Denisty of Liquid (Kgm-3)
+        "cpS" : , -> Heat capacity of Solid (Jk-1)
+        "cpL": , -> Heat capacity of Liquid (JK-1)
         }
 
         """
